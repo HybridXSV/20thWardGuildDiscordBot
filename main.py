@@ -2,11 +2,10 @@ import os
 import discord
 import asyncio
 import emoji
-
-
 from dotenv import load_dotenv
 from googletrans import Translator
 from threading import Thread
+from flaskServer import keep_alive
 
 # TO DO:
 # 1. Make bots detect themselves using group roles
@@ -14,18 +13,12 @@ from threading import Thread
 # 3. Figure out why client.send() doesn't persist
 
 load_dotenv()
-TOKEN = os.getenv('AutoTranslatorBotToken')
 client = discord.Client()
 
 botName = '20th Ward Translator'
 channelName = 'bot-testing'
 
 botNames = ['20th Ward Translator', 'Smoogle Translate']
-
-
-
-
-
 
 def translate(message):
     translator = Translator()
@@ -74,6 +67,8 @@ async def on_ready():
 
 
 if __name__ == "__main__":
+  keep_alive()
+  
   loop = asyncio.get_event_loop()
-  loop.create_task(client.start(TOKEN))
+  loop.create_task(client.start(os.getenv('AutoTranslatorBotToken')))
   Thread(target=loop.run_forever())
