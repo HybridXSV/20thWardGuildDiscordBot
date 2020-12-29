@@ -15,9 +15,7 @@ from flaskServer import keep_alive
 load_dotenv()
 client = discord.Client()
 
-botName = '20th Ward Translator'
-channelName = 'bot-testing'
-
+channelNames = ['bot-testing', 'general-chat', 'reservoir-raid']
 botNames = ['20th Ward Translator', 'Smoogle Translate']
 
 def translate(message):
@@ -42,6 +40,13 @@ def isBotName(name):
 
   return False
 
+def isTranslateChannel(name):
+  for chennel in channelNames:
+    if chennel == name:
+      return True
+
+  return False
+
 
 def message_is_emoji(message):
   if len(message) == 1:
@@ -49,15 +54,15 @@ def message_is_emoji(message):
   else:
     return False
 
+
 @client.event
 async def on_message(message):
     current_channel = message.channel.name
 
-
-    if current_channel == channelName and not isBotName(message.author.name):
-        for channel in client.get_all_channels():
-            if channel.name == 'bot-testing': 
-              if message.content != "" and not message_is_emoji(message.content):
+    if message.content != "" and not message_is_emoji(message.content):
+      if not isBotName(message.author.name):
+          for channel in client.get_all_channels():
+              if channel.name == current_channel: 
                 responseMessage = message.author.name + ': ' + translate(message.content)
                 await channel.send(responseMessage)
 
